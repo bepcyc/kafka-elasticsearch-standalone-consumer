@@ -32,44 +32,44 @@ import com.netflix.curator.retry.RetryNTimes;
 public class KafkaClient {
 
 	
-	private final int FIND_KAFKA_LEADER_TIMEOUT = 10000;
-	CuratorFramework curator;
-	SimpleConsumer simpleConsumer;
-	String zooKeeper;
-	String incomingBrokerHost;
-	int inComingBrokerPort;
-	String inComingbrokerURL;
-	String clientName;
-	String topic;
-	int partition;
-	List<String> m_replicaBrokers;
-	String leadBrokerHost;
-	int leadBrokerPort;
-	String leadBrokerURL;
-	ConsumerConfig consumerConfig;
-	Logger logger = ConsumerLogger.getLogger(this.getClass());
+	private final static int FIND_KAFKA_LEADER_TIMEOUT = 10000;
+	private CuratorFramework curator;
+	private SimpleConsumer simpleConsumer;
+	private final String zooKeeper;
+	private final String incomingBrokerHost;
+	private final int incomingBrokerPort;
+	private final String incomingBrokerURL;
+	private final String clientName;
+	private final String topic;
+	private final int partition;
+	private final List<String> replicaBrokers;
+	private String leadBrokerHost;
+	private int leadBrokerPort;
+	private String leadBrokerURL;
+	private final ConsumerConfig consumerConfig;
+	private final Logger logger = ConsumerLogger.getLogger(this.getClass());
 
 	
-	public KafkaClient(ConsumerConfig a_config, String a_zooKeeper, String a_brokerHost, int a_port, int a_partition, String a_clientName, String a_topic) throws Exception {
+	public KafkaClient(ConsumerConfig config, String zooKeeper, String brokerHost, int brokerPort, int partition, String clientName, String topic) throws Exception {
 		logger.info("Instantiating KafkaClient");
-		this.consumerConfig = a_config;
+		this.consumerConfig = config;
 		
-		this.zooKeeper = a_zooKeeper;
-		this.topic = a_topic;
-		this.incomingBrokerHost = a_brokerHost;
-		this.inComingBrokerPort = a_port;
-		this.inComingbrokerURL = this.incomingBrokerHost + ":" + this.inComingBrokerPort;
-		this.clientName = a_clientName;
-		this.partition = a_partition;
+		this.zooKeeper = zooKeeper;
+		this.topic = topic;
+		this.incomingBrokerHost = brokerHost;
+		this.incomingBrokerPort = brokerPort;
+		this.incomingBrokerURL = this.incomingBrokerHost + ":" + this.incomingBrokerPort;
+		this.clientName = clientName;
+		this.partition = partition;
 		logger.info("### Printing out Config Value passed ###");
 		logger.info("zooKeeper::" + this.zooKeeper);
 		logger.info("topic::" + this.topic);
 		logger.info("incomingBrokerHost::" + this.incomingBrokerHost);
-		logger.info("inComingBrokerPort::" + this.inComingBrokerPort);
-		logger.info("inComingbrokerURL::" + this.inComingbrokerURL);
+		logger.info("incomingBrokerPort::" + this.incomingBrokerPort);
+		logger.info("inComingBrokerURL::" + this.incomingBrokerURL);
 		logger.info("clientName::" + this.clientName);
 		logger.info("partition::" + this.partition);
-		m_replicaBrokers = new ArrayList<String>();
+		replicaBrokers = new ArrayList<String>();
 		logger.info("Starting to connect to Zookeeper");
 		connectToZooKeeper(this.zooKeeper);
 		logger.info("Starting to find the Kafka Lead Broker");
@@ -94,7 +94,7 @@ public class KafkaClient {
 	public void initConsumer() throws Exception{
 		try{
 			this.simpleConsumer = new SimpleConsumer(this.leadBrokerHost, this.leadBrokerPort, 5000, 1024 * 1024 * 10, this.clientName);
-			logger.info("Succesfully initialized Kafka Consumer");
+			logger.info("Successfully initialized Kafka Consumer");
 		}
 		catch(Exception e){
 			logger.fatal("Failed to initialize Kafka Consumer. Throwing the Error. Error Message is::" + e.getMessage());
@@ -152,7 +152,7 @@ public class KafkaClient {
 			return (Short) offsetCommitResp.errors().get(tp);
 		}
 		catch(Exception e){
-			logger.fatal("Error when commiting Offset to Kafka. Throwing the error. Error Message is::" + e.getMessage());
+			logger.fatal("Error when committing Offset to Kafka. Throwing the error. Error Message is::" + e.getMessage());
 			throw e;
 		}
 	}
@@ -180,7 +180,7 @@ public class KafkaClient {
 		PartitionMetadata returnMetaData = null;
 		SimpleConsumer leadFindConsumer = null;
 		try {
-			leadFindConsumer = new SimpleConsumer(this.incomingBrokerHost, this.inComingBrokerPort, FIND_KAFKA_LEADER_TIMEOUT,
+			leadFindConsumer = new SimpleConsumer(this.incomingBrokerHost, this.incomingBrokerPort, FIND_KAFKA_LEADER_TIMEOUT,
 					this.consumerConfig.bulkSize, "leaderLookup");
 			List<String> topics = new ArrayList<String>();
 			topics.add(this.topic);
@@ -209,9 +209,9 @@ public class KafkaClient {
 			
 		}
 		if (returnMetaData != null) {
-			m_replicaBrokers.clear();
+			replicaBrokers.clear();
 			for (kafka.cluster.Broker replica : returnMetaData.replicas()) {
-				m_replicaBrokers.add(replica.host());
+				replicaBrokers.add(replica.host());
 			}
 		}
 		
@@ -259,14 +259,14 @@ public class KafkaClient {
     }
 	
 	
-	public long getLastestOffset() throws Exception {
+	public long getLatestOffset() throws Exception {
 		Long latestOffset;
-		logger.info("Trying to get the LastestOffset for the topic: " + this.clientName);
+		logger.info("Trying to get the LatestOffset for the topic: " + this.clientName);
 		try{
 			latestOffset = this.getOffset(this.topic, this.partition, OffsetRequest.LatestTime(), this.clientName);
 		}
 		catch(Exception e){
-			logger.fatal("Exception when trying to get the getLastestOffset. Throwing the exception. Error is:" + e.getMessage());
+			logger.fatal("Exception when trying to get the getLatestOffset. Throwing the exception. Error is:" + e.getMessage());
 			throw e;
 		}
 		logger.info("LatestOffset is::" + latestOffset);
@@ -275,17 +275,17 @@ public class KafkaClient {
 	}
 	
 	public long getOldestOffset() throws Exception {
-		Long oldestOffet;
+		Long oldestOffset;
 		logger.info("Trying to get the OldestOffset for the topic: " + this.clientName);
 		try{
-			oldestOffet = this.getOffset(this.topic, this.partition, OffsetRequest.EarliestTime(), this.clientName);
+			oldestOffset = this.getOffset(this.topic, this.partition, OffsetRequest.EarliestTime(), this.clientName);
 		}
 		catch(Exception e){
 			logger.fatal("Exception when trying to get the getOldestOffset. Throwing the exception. Error is:" + e.getMessage());
 			throw e;
 		}
-		logger.info("oldestOffet is::" + oldestOffet);
-		return oldestOffet;
+		logger.info("oldestOffset is::" + oldestOffset);
+		return oldestOffset;
 	}
 	
 	private long getOffset(String topic, int partition, long whichTime, String clientName) throws Exception {
@@ -321,7 +321,7 @@ public class KafkaClient {
 		try{
 			FetchRequest req = new FetchRequestBuilder().clientId(clientName).addFetch(this.topic, this.partition, offset, maxSizeBytes).build();
 			FetchResponse fetchResponse = this.simpleConsumer.fetch(req);
-			logger.info("Fetch from Kafka exceuted without Exception. Returning with the fetchResponse");
+			logger.info("Fetch from Kafka excecuted without Exception. Returning with the fetchResponse");
 			return fetchResponse;
 		}
 		catch(Exception e){

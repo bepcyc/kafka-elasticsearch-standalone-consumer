@@ -1,6 +1,9 @@
 package org.elasticsearch.kafka.consumer;
 
 import junit.framework.TestCase;
+import org.elasticsearch.kafka.consumer.ConsumerConfig;
+import org.elasticsearch.kafka.consumer.ConsumerJob;
+import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -34,6 +37,7 @@ public class TestConsumerJob extends TestCase {
         properties.load(inputStream);
     }
 
+    @Test
     public void testConsumerConfig() {
         try {
             final ConsumerConfig config = new ConsumerConfig(this.properties);
@@ -43,6 +47,7 @@ public class TestConsumerJob extends TestCase {
         }
     }
 
+    @Test
     public void testConsumerJob() {
         try {
             final ConsumerConfig config = new ConsumerConfig(this.properties);

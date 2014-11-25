@@ -35,7 +35,7 @@ public class ConsumerJob {
 	public ConsumerJob(ConsumerConfig config) throws Exception {
 		this.consumerConfig = config;
 		this.isStartingFirstTime = true;
-		this.initKakfa();
+		this.initKafka();
 		this.initElasticSearch();
 		this.createMessageHandler();
 	}
@@ -46,7 +46,7 @@ public class ConsumerJob {
 		Settings settings = ImmutableSettings.settingsBuilder().put("cluster.name", this.consumerConfig.esClusterName).build();
 		try{
 			this.esClient = new TransportClient(settings).addTransportAddress(new InetSocketTransportAddress(this.consumerConfig.esHost, this.consumerConfig.esPort));
-			logger.info("Initializing ElasticSearch Success. ElasticSearch Client created and intialized.");
+			logger.info("Initializing ElasticSearch Success. ElasticSearch Client created and initialized.");
 		}
 		catch(Exception e){
 			logger.fatal("Exception when trying to connect and create ElasticSearch Client. Throwing the error. Error Message is::" + e.getMessage());
@@ -55,7 +55,7 @@ public class ConsumerJob {
 		
 	}
 	
-	void initKakfa() throws Exception {
+	void initKafka() throws Exception {
 		logger.info("Initializing Kafka");
 		String consumerGroupName = consumerConfig.consumerGroupName;
 		if(consumerGroupName.isEmpty()){
@@ -70,7 +70,7 @@ public class ConsumerJob {
 	}
 	
 	
-	void reInitKakfa() throws Exception {
+	void reInitKafka() throws Exception {
 		logger.info("Kafka Reintialization Kafka & Consumer Client");
 		this.kafkaConsumerClient.close();
 		logger.info("Kafka client closed");
@@ -80,12 +80,12 @@ public class ConsumerJob {
 		logger.info("Kafka Reintialization Kafka & Consumer Client is success");
 	}
 	
-	void computeOffset() throws Exception{
+	public long computeOffset() throws Exception{
 		if(!isStartingFirstTime){
 			logger.info("This is not 1st time read in Kafka");
 			this.readOffset = kafkaConsumerClient.fetchCurrentOffsetFromKafka();
 			logger.info("computedOffset:=" + this.readOffset);
-			return;
+			return this.readOffset;
 		}
 		logger.info("**** Starting the Kafka Read for 1st time ***");
 		if(consumerConfig.startOffsetFrom.equalsIgnoreCase("CUSTOM")){
@@ -105,7 +105,7 @@ public class ConsumerJob {
 		}
 		else if(consumerConfig.startOffsetFrom.equalsIgnoreCase("LATEST")){
 			logger.info("startOffsetFrom is selected as LATEST");
-			this.readOffset = kafkaConsumerClient.getLastestOffset();
+			this.readOffset = kafkaConsumerClient.getLatestOffset();
 		}
 		else if(consumerConfig.startOffsetFrom.equalsIgnoreCase("RESTART")){
 			logger.info("ReStarting from where the Offset is left for consumer:" + this.consumerGroupTopicPartition);
@@ -114,7 +114,8 @@ public class ConsumerJob {
 		}
 		this.isStartingFirstTime = false;
 		logger.info("computedOffset:=" + this.readOffset);
-		System.out.println("readOffset:=" + this.readOffset);		
+		System.out.println("readOffset:=" + this.readOffset);
+		return this.readOffset;
 	}
 	
 	
@@ -146,13 +147,13 @@ public class ConsumerJob {
 			logger.error("Kafka fetch error happened. Error code is::" + errorCode + " Starting to handle the error");
 			if (errorCode == ErrorMapping.BrokerNotAvailableCode()){
 				logger.error("BrokerNotAvailableCode error happened when fetching message from Kafka. ReInitiating Kafka Client");
-				this.reInitKakfa();
+				this.reInitKafka();
 				return;
 				
 			}
 			else if(errorCode == ErrorMapping.InvalidFetchSizeCode()){
 				logger.error("InvalidFetchSizeCode error happened when fetching message from Kafka. ReInitiating Kafka Client");
-				reInitKakfa();
+				reInitKafka();
 				return;
 				
 			}
@@ -163,7 +164,7 @@ public class ConsumerJob {
 			}
 			else if(errorCode == ErrorMapping.LeaderNotAvailableCode()){
 				logger.error("LeaderNotAvailableCode error happened when fetching message from Kafka. ReInitiating Kafka Client");
-				reInitKakfa();
+				reInitKafka();
 				return;
 				
 			}
@@ -174,7 +175,7 @@ public class ConsumerJob {
 			}
 			else if(errorCode == ErrorMapping.NotLeaderForPartitionCode()){
 				logger.error("NotLeaderForPartitionCode error happened when fetching message from Kafka, not handling it. ReInitiating Kafka Client.");
-				reInitKakfa();
+				reInitKafka();
 				return;
 				
 			}

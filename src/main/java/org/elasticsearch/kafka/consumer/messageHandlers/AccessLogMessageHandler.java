@@ -1,15 +1,14 @@
 package org.elasticsearch.kafka.consumer.messageHandlers;
 
+import kafka.consumer.ConsumerConfig;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.elasticsearch.kafka.consumer.ConsumerLogger;
+import org.elasticsearch.kafka.consumer.mappers.AccessLogMapper;
+
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
-
-import kafka.consumer.ConsumerConfig;
-
-import org.codehaus.jackson.map.ObjectMapper;
-import org.elasticsearch.kafka.consumer.ConsumerLogger;
-import org.elasticsearch.kafka.consumer.mappers.AccessLogMapper;
 
 
 public class AccessLogMessageHandler extends RawMessageStringHandler {

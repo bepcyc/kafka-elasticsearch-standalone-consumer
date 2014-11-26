@@ -1,8 +1,6 @@
 package org.elasticsearch.kafka.consumer;
 
 import junit.framework.TestCase;
-import org.elasticsearch.kafka.consumer.ConsumerConfig;
-import org.elasticsearch.kafka.consumer.ConsumerJob;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;

@@ -1,14 +1,14 @@
 package org.elasticsearch.kafka.consumer;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-
+import kafka.message.Message;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.client.Client;
-import kafka.message.Message;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 
 public abstract class MessageHandler {

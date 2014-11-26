@@ -1,11 +1,11 @@
 package org.elasticsearch.kafka.consumer.messageHandlers;
 
-import java.nio.ByteBuffer;
-
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.kafka.consumer.ConsumerLogger;
 import org.elasticsearch.kafka.consumer.MessageHandler;
+
+import java.nio.ByteBuffer;
 
 public class RawMessageStringHandler extends MessageHandler {
 

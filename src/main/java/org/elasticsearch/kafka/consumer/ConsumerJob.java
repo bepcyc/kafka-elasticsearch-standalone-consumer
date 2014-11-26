@@ -1,20 +1,19 @@
 package org.elasticsearch.kafka.consumer;
 
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-
 import kafka.common.ErrorMapping;
 import kafka.javaapi.FetchResponse;
 import kafka.javaapi.message.ByteBufferMessageSet;
 import kafka.message.Message;
 import kafka.message.MessageAndOffset;
-
 import org.apache.log4j.Logger;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 
 public class ConsumerJob {
 

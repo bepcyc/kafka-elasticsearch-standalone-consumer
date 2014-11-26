@@ -1,10 +1,10 @@
 package org.elasticsearch.kafka.consumer;
 
-import java.io.IOException;
-import java.util.Properties;
-
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+
+import java.io.IOException;
+import java.util.Properties;
 
 public class ConsumerLogger {
 

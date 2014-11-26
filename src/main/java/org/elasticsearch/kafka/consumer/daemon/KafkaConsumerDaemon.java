@@ -3,11 +3,11 @@ package org.elasticsearch.kafka.consumer.daemon;
 import org.apache.commons.daemon.Daemon;
 import org.apache.commons.daemon.DaemonContext;
 import org.apache.commons.daemon.DaemonInitException;
+import org.apache.log4j.Logger;
 import org.elasticsearch.kafka.consumer.ConsumerConfig;
 import org.elasticsearch.kafka.consumer.ConsumerJob;
 import org.elasticsearch.kafka.consumer.ConsumerLogger;
 import org.elasticsearch.kafka.consumer.helpers.ExceptionHelper;
-import org.apache.log4j.Logger;
 
 public class KafkaConsumerDaemon implements Daemon {
 	

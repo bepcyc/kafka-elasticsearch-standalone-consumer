@@ -1,9 +1,9 @@
 package org.elasticsearch.kafka.consumer;
 
+import org.elasticsearch.common.unit.TimeValue;
+
 import java.io.InputStream;
 import java.util.Properties;
-
-import org.elasticsearch.common.unit.TimeValue;
 
 public class ConsumerConfig {
 

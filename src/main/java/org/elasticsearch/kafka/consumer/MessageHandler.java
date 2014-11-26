@@ -9,15 +9,17 @@ import org.elasticsearch.client.Client;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public abstract class MessageHandler {
 
 	private Client esClient;
-	private LinkedHashMap<Long, Message> offsetMsgMap;
+	private Map<Long, Message> offsetMsgMap;
 	private ConsumerConfig config;
 	private BulkRequestBuilder bulkReqBuilder;
-	private ArrayList<Object> esPostObject= new ArrayList<Object>();
+	private List<String> esPostObject= new ArrayList<>();
 	Logger logger = ConsumerLogger.getLogger(this.getClass());
 		
 	public MessageHandler(){
@@ -39,7 +41,7 @@ public abstract class MessageHandler {
 		
 	}*/
 	
-	public LinkedHashMap<Long, Message> getOffsetMsgMap() {
+	public Map<Long, Message> getOffsetMsgMap() {
 		return offsetMsgMap;
 	}
 
@@ -63,18 +65,18 @@ public abstract class MessageHandler {
 		this.bulkReqBuilder = bulkReqBuilder;
 	}
 	
-	public ArrayList<Object> getEsPostObject() {
+	public List<String> getEsPostObject() {
 		return esPostObject;
 	}
 
-	public void setEsPostObject(ArrayList<Object> esPostObject) {
+	public void setEsPostObject(List<String> esPostObject) {
 		this.esPostObject = esPostObject;
 	}
 
 	public void initMessageHandler(Client client,ConsumerConfig config){
 		this.esClient = client;
 		this.config = config;
-		this.esPostObject= new ArrayList<Object>();
+		this.esPostObject= new ArrayList<>();
 		this.offsetMsgMap = new LinkedHashMap<Long, Message>();
 		this.bulkReqBuilder = null;
 		logger.info("Initialized Message Handler");
@@ -109,10 +111,10 @@ public abstract class MessageHandler {
 					}
 				}
 				
-				int msgFailurePercentage = (Integer)((failedCount/offsetMsgMap.size()) * 100); 
+				int msgFailurePercentage = (failedCount/offsetMsgMap.size()) * 100;
 				logger.info("% of failed message post to ElasticSearch is::" + msgFailurePercentage);
-				logger.info("ElasticSearch msg failure tolerance % is::" + this.config.esMsgFailureTolerancePercent);
-				if(msgFailurePercentage > this.config.esMsgFailureTolerancePercent){
+				logger.info("ElasticSearch msg failure tolerance % is::" + this.config.getEsMsgFailureTolerancePercent());
+				if(msgFailurePercentage > this.config.getEsMsgFailureTolerancePercent()){
 					logger.error("% of failed messages is GREATER than set tolerance.Hence would return to consumer job with FALSE");
 					return false;
 				}

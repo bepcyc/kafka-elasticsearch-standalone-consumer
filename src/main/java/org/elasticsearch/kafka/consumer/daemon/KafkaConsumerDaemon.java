@@ -2,7 +2,6 @@ package org.elasticsearch.kafka.consumer.daemon;
 
 import org.apache.commons.daemon.Daemon;
 import org.apache.commons.daemon.DaemonContext;
-import org.apache.commons.daemon.DaemonInitException;
 import org.apache.log4j.Logger;
 import org.elasticsearch.kafka.consumer.ConsumerConfig;
 import org.elasticsearch.kafka.consumer.ConsumerJob;
@@ -15,10 +14,10 @@ public class KafkaConsumerDaemon implements Daemon {
 	private boolean stopped = false;
 	public ConsumerJob kafkaConsumerJob = null;
 	private boolean isConsumeJobInProgress = false;
-	Logger logger;
+	private Logger logger;
 	
 	@Override
-    public void init(DaemonContext daemonContext) throws DaemonInitException, Exception {
+    public void init(DaemonContext daemonContext) throws Exception {
 		String[] args = daemonContext.getArguments();
 		System.out.println("Arguments passed to the Consumer Daemon are::");
 		for(String arg : args){

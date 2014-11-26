@@ -21,7 +21,7 @@ public class ConsumerJob {
 	private long readOffset;
 	private MessageHandler msgHandler;
 	private Client esClient;
-	public KafkaClient kafkaConsumerClient;
+	private KafkaClient kafkaConsumerClient;
 	private Long currentOffsetAtProcess;
 	private Long nextOffsetToProcess;
 	//StatsReporter statsd;
@@ -41,10 +41,10 @@ public class ConsumerJob {
 
 	void initElasticSearch() throws Exception{
 		logger.info("Initializing ElasticSearch");
-		logger.info("esClusterName is::" + this.consumerConfig.esClusterName);
-		Settings settings = ImmutableSettings.settingsBuilder().put("cluster.name", this.consumerConfig.esClusterName).build();
+		logger.info("esClusterName is::" + this.consumerConfig.getEsClusterName());
+		Settings settings = ImmutableSettings.settingsBuilder().put("cluster.name", this.consumerConfig.getEsClusterName()).build();
 		try{
-			this.esClient = new TransportClient(settings).addTransportAddress(new InetSocketTransportAddress(this.consumerConfig.esHost, this.consumerConfig.esPort));
+			this.esClient = new TransportClient(settings).addTransportAddress(new InetSocketTransportAddress(this.consumerConfig.getEsHost(), this.consumerConfig.getEsPort()));
 			logger.info("Initializing ElasticSearch Success. ElasticSearch Client created and initialized.");
 		}
 		catch(Exception e){
@@ -56,16 +56,16 @@ public class ConsumerJob {
 	
 	void initKafka() throws Exception {
 		logger.info("Initializing Kafka");
-		String consumerGroupName = consumerConfig.consumerGroupName;
+		String consumerGroupName = consumerConfig.getConsumerGroupName();
 		if(consumerGroupName.isEmpty()){
-			consumerGroupName = "Client_" + consumerConfig.topic + "_" + consumerConfig.partition;
+			consumerGroupName = "Client_" + consumerConfig.getTopic() + "_" + consumerConfig.getPartition();
 			logger.info("ConsumerGroupName is empty.Hence created a group name");
 		}
 		logger.info("consumerGroupName is:" + consumerGroupName);
-		this.consumerGroupTopicPartition = consumerGroupName + "_" +  consumerConfig.topic + "_" + consumerConfig.partition;
+		this.consumerGroupTopicPartition = consumerGroupName + "_" + consumerConfig.getTopic() + "_" + consumerConfig.getPartition();
 		logger.info("consumerGroupTopicPartition is:" + consumerGroupTopicPartition);
-		this.kafkaConsumerClient = new KafkaClient(consumerConfig, consumerConfig.zookeeper, consumerConfig.brokerHost, consumerConfig.brokerPort, consumerConfig.partition, consumerGroupName, consumerConfig.topic);
-		logger.info("Kafka intialization success and kafka client created and intialized");
+		this.kafkaConsumerClient = new KafkaClient(consumerConfig, consumerConfig.getZookeeper(), consumerConfig.getBrokerHost(), consumerConfig.getBrokerPort(), consumerConfig.getPartition(), consumerGroupName, consumerConfig.getTopic());
+		logger.info("Kafka intialization success and kafka client created and initialized");
 	}
 	
 	
@@ -87,26 +87,26 @@ public class ConsumerJob {
 			return this.readOffset;
 		}
 		logger.info("**** Starting the Kafka Read for 1st time ***");
-		if(consumerConfig.startOffsetFrom.equalsIgnoreCase("CUSTOM")){
+		if(consumerConfig.getStartOffsetFrom().equalsIgnoreCase("CUSTOM")){
 			logger.info("startOffsetFrom is CUSTOM");
-			logger.info("startOffset is given as:" + consumerConfig.startOffset);
-			if(consumerConfig.startOffset != -1){
-				this.readOffset = consumerConfig.startOffset;
+			logger.info("startOffset is given as:" + consumerConfig.getStartOffset());
+			if(consumerConfig.getStartOffset() != -1){
+				this.readOffset = consumerConfig.getStartOffset();
 			}
 			else{
 				logger.fatal("Custom start from Offset for" + this.consumerGroupTopicPartition + " is -1 which is a not acceptable value. When startOffsetFrom config value is custom, then a valid startOffset has to be provided. Exiting !");
 				throw new RuntimeException("Custom start from Offset for" + this.consumerGroupTopicPartition + " is -1 which is a not acceptable value. When startOffsetFrom config value is custom, then a valid startOffset has to be provided");
 			}	
 		}
-		else if(consumerConfig.startOffsetFrom.equalsIgnoreCase("OLDEST")){
+		else if(consumerConfig.getStartOffsetFrom().equalsIgnoreCase("OLDEST")){
 			logger.info("startOffsetFrom is selected as OLDEST");
 			this.readOffset = kafkaConsumerClient.getOldestOffset();
 		}
-		else if(consumerConfig.startOffsetFrom.equalsIgnoreCase("LATEST")){
+		else if(consumerConfig.getStartOffsetFrom().equalsIgnoreCase("LATEST")){
 			logger.info("startOffsetFrom is selected as LATEST");
 			this.readOffset = kafkaConsumerClient.getLatestOffset();
 		}
-		else if(consumerConfig.startOffsetFrom.equalsIgnoreCase("RESTART")){
+		else if(consumerConfig.getStartOffsetFrom().equalsIgnoreCase("RESTART")){
 			logger.info("ReStarting from where the Offset is left for consumer:" + this.consumerGroupTopicPartition);
 			logger.info("startOffsetFrom is selected as RESTART");
 			this.readOffset = kafkaConsumerClient.fetchCurrentOffsetFromKafka();
@@ -120,10 +120,10 @@ public class ConsumerJob {
 	
 	private void createMessageHandler() throws Exception {
 		try{
-			logger.info("MessageHandler Class given in config is:" + this.consumerConfig.messageHandlerClass);
-			this.msgHandler = (MessageHandler)Class.forName(this.consumerConfig.messageHandlerClass).newInstance();
+			logger.info("MessageHandler Class given in config is:" + this.consumerConfig.getMessageHandlerClass());
+			this.msgHandler = (MessageHandler)Class.forName(this.consumerConfig.getMessageHandlerClass()).newInstance();
 			this.msgHandler.initMessageHandler(this.esClient, this.consumerConfig);
-			logger.info("Created an initialized MessageHandle::" + this.consumerConfig.messageHandlerClass);
+			logger.info("Created an initialized MessageHandle::" + this.consumerConfig.getMessageHandlerClass());
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -135,14 +135,14 @@ public class ConsumerJob {
 	public void doRun() throws Exception {
 		logger.info("***** Starting a new round of kafka read and post to ElasticSearch ******");
 		long jobStartTime = System.currentTimeMillis();
-		LinkedHashMap<Long,Message> offsetMsgMap = new  LinkedHashMap<Long,Message>();
+		LinkedHashMap<Long,Message> offsetMsgMap = new  LinkedHashMap<>();
 		computeOffset();
-		FetchResponse fetchResponse = this.kafkaConsumerClient.getFetchResponse(this.readOffset, this.consumerConfig.bulkSize);
-		long timeAfterKafaFetch = System.currentTimeMillis();
-		logger.info("Fetched the reponse from Kafka. Approx time taken is::" + (timeAfterKafaFetch-jobStartTime) + " milliSec");
+		FetchResponse fetchResponse = this.kafkaConsumerClient.getFetchResponse(this.readOffset, this.consumerConfig.getBulkSize());
+		long timeAfterKafkaFetch = System.currentTimeMillis();
+		logger.info("Fetched the response from Kafka. Approx time taken is::" + (timeAfterKafkaFetch-jobStartTime) + " milliSec");
 		if(fetchResponse.hasError()){			
 			//Do things according to the error code
-			short errorCode = fetchResponse.errorCode(this.consumerConfig.topic, this.consumerConfig.partition);
+			short errorCode = fetchResponse.errorCode(this.consumerConfig.getTopic(), this.consumerConfig.getPartition());
 			logger.error("Kafka fetch error happened. Error code is::" + errorCode + " Starting to handle the error");
 			if (errorCode == ErrorMapping.BrokerNotAvailableCode()){
 				logger.error("BrokerNotAvailableCode error happened when fetching message from Kafka. ReInitiating Kafka Client");
@@ -222,7 +222,7 @@ public class ConsumerJob {
 		}
 		ByteBufferMessageSet byteBufferMsgSet = this.kafkaConsumerClient.fetchMessageSet(fetchResponse);
 		long timeAftKafaFetchMsgSet = System.currentTimeMillis();
-		logger.info("Completed MsgSet fetch from Kafka. Approx time taken is::" + (timeAftKafaFetchMsgSet-timeAfterKafaFetch) + " milliSec");
+		logger.info("Completed MsgSet fetch from Kafka. Approx time taken is::" + (timeAftKafaFetchMsgSet-timeAfterKafkaFetch) + " milliSec");
 		if(byteBufferMsgSet.validBytes() <= 0){
 			logger.warn("No valid bytes available in Kafka response MessageSet. Sleeping for 1 second");
 			Thread.sleep(1000);
@@ -253,7 +253,7 @@ public class ConsumerJob {
 		logger.info("Approx time it took to post of ElasticSearch is:" + (timeAftEsPost-timeAtPrepareES) + " milliSec");
 		if(esPostResult){
 			logger.info("Commiting offset #::" + this.nextOffsetToProcess);
-			this.kafkaConsumerClient.saveOffsetInKafka(this.nextOffsetToProcess, fetchResponse.errorCode(this.consumerConfig.topic, this.consumerConfig.partition));
+			this.kafkaConsumerClient.saveOffsetInKafka(this.nextOffsetToProcess, fetchResponse.errorCode(this.consumerConfig.getTopic(), this.consumerConfig.getPartition()));
 		}
 		else{
 			logger.error("Posting to ElasticSearch has error");

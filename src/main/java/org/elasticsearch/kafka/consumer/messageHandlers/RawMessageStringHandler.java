@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
 
 public class RawMessageStringHandler extends MessageHandler {
 
-	Logger logger = ConsumerLogger.getLogger(this.getClass());
+	private final Logger logger = ConsumerLogger.getLogger(this.getClass());
 
 	public RawMessageStringHandler(){
 		super();
@@ -31,7 +31,7 @@ public class RawMessageStringHandler extends MessageHandler {
 		logger.info("Starting prepareForPostToElasticSearch");
 		BulkRequestBuilder buildReqBuilder = this.getEsClient().prepareBulk();
 		for (Object eachMsg : this.getEsPostObject()){
-			buildReqBuilder.add(this.getEsClient().prepareIndex(this.getConfig().esIndex, this.getConfig().esIndexType).setSource((String)eachMsg));
+			buildReqBuilder.add(this.getEsClient().prepareIndex(this.getConfig().getEsIndex(), this.getConfig().getEsIndexType()).setSource((String) eachMsg));
 		}
 		this.setBuildReqBuilder(buildReqBuilder);
 	}

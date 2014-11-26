@@ -7,7 +7,6 @@ import java.util.Properties;
 
 public class ConsumerConfig {
 
-    InputStream input = null;
     //Logger object cannot be initialized since the logProperty file for the instance would be known only after config is read
     //Logger logger = ConsumerLogger.initLogger(this.getClass());
     private final int BULK_MSG_SIZE = 10 * 1024 * 1024 * 3;
@@ -15,57 +14,58 @@ public class ConsumerConfig {
     private final String BULK_MSG_TIMEOUT_STRING = "10ms";
 
     //Kafka ZooKeeper's IP Address/HostName without port
-    public String zookeeper;
+    private String zookeeper;
     //Full class path and name for the concrete message handler class factory
-    public String messageHandlerClass;
+    private String messageHandlerClass;
     //Kafka Broker's IP Address/HostName
-    public String brokerHost;
+    private String brokerHost;
     //Kafka Broker's Port number
-    public int brokerPort;
+    private int brokerPort;
     //Kafka Topic from which the message has to be processed
-    public String topic;
+    private String topic;
     //Partition in the Kafka Topic from which the message has to be processed
-    public short partition;
+    private short partition;
     //Option from where the message fetching should happen in Kafka
     // Values can be: CUSTOM/OLDEST/LATEST/RESTART.
     // If 'CUSTOM' is set, then 'startOffset' has to be set an int value
-    public String startOffsetFrom;
+    private String startOffsetFrom;
     //int value of the offset from where the message processing should happen
-    public int startOffset;
+    private int startOffset;
     //Name of the Kafka Consumer Group
-    public String consumerGroupName;
-    public String statsdPrefix;
-    public String statsdHost;
-    public int statsdPort;
+    private String consumerGroupName;
+    private String statsdPrefix;
+    private String statsdHost;
+    private int statsdPort;
     //Preferred Size of message to be fetched from Kafka in 1 Fetch call to kafka
-    public int bulkSize;
+    private int bulkSize;
     //Timeout when fetching message from Kafka
-    public TimeValue bulkTimeout;
+    private TimeValue bulkTimeout;
     //Preferred Message Encoding to process the message before posting it to ElasticSearch
-    public String messageEncoding;
+    private String messageEncoding;
     //TBD
-    public boolean isGuranteedEsPostMode;
+    private boolean isGuranteedEsPostMode;
     //Name of the ElasticSearch Cluster
-    public String esClusterName;
+    private String esClusterName;
     //Hostname/ipAddress of ElasticSearch
-    public String esHost;
+    private String esHost;
     //Port number of ElasticSearch
-    public int esPort;
+    private int esPort;
     //IndexName in ElasticSearch to which the processed Message has to be posted
-    public String esIndex;
+    private String esIndex;
     //IndexType in ElasticSearch to which the processed Message has to be posted
-    public String esIndexType;
+    private String esIndexType;
     //Percentage of message failure tolerance
-    public int esMsgFailureTolerancePercent;
+    private int esMsgFailureTolerancePercent;
 
     //Log property file for the consumer instance
-    public String logPropertyFile;
+    private String logPropertyFile;
 
     public ConsumerConfig(final Properties properties) throws Exception {
         init(properties);
     }
 
     public ConsumerConfig(String configFile) throws Exception {
+        InputStream input;
         try {
             //logger.info("configFile Passed::"+configFile);
             input = this.getClass().getClassLoader().getResourceAsStream(configFile);
@@ -147,5 +147,95 @@ public class ConsumerConfig {
         }
     }
 
+    public String getZookeeper() {
+        return zookeeper;
+    }
 
+    public String getMessageHandlerClass() {
+        return messageHandlerClass;
+    }
+
+    public String getBrokerHost() {
+        return brokerHost;
+    }
+
+    public int getBrokerPort() {
+        return brokerPort;
+    }
+
+    public String getTopic() {
+        return topic;
+    }
+
+    public short getPartition() {
+        return partition;
+    }
+
+    public String getStartOffsetFrom() {
+        return startOffsetFrom;
+    }
+
+    public int getStartOffset() {
+        return startOffset;
+    }
+
+    public String getConsumerGroupName() {
+        return consumerGroupName;
+    }
+
+    public String getStatsdPrefix() {
+        return statsdPrefix;
+    }
+
+    public String getStatsdHost() {
+        return statsdHost;
+    }
+
+    public int getStatsdPort() {
+        return statsdPort;
+    }
+
+    public int getBulkSize() {
+        return bulkSize;
+    }
+
+    public TimeValue getBulkTimeout() {
+        return bulkTimeout;
+    }
+
+    public String getMessageEncoding() {
+        return messageEncoding;
+    }
+
+    public boolean isGuranteedEsPostMode() {
+        return isGuranteedEsPostMode;
+    }
+
+    public String getEsClusterName() {
+        return esClusterName;
+    }
+
+    public String getEsHost() {
+        return esHost;
+    }
+
+    public int getEsPort() {
+        return esPort;
+    }
+
+    public String getEsIndex() {
+        return esIndex;
+    }
+
+    public String getEsIndexType() {
+        return esIndexType;
+    }
+
+    public int getEsMsgFailureTolerancePercent() {
+        return esMsgFailureTolerancePercent;
+    }
+
+    public String getLogPropertyFile() {
+        return logPropertyFile;
+    }
 }

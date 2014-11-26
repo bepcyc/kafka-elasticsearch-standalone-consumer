@@ -60,7 +60,7 @@ public class KafkaClient {
 		logger.info("inComingBrokerURL::" + this.incomingBrokerURL);
 		logger.info("clientName::" + this.clientName);
 		logger.info("partition::" + this.partition);
-		replicaBrokers = new ArrayList<String>();
+		replicaBrokers = new ArrayList<>();
 		logger.info("Starting to connect to Zookeeper");
 		connectToZooKeeper(this.zooKeeper);
 		logger.info("Starting to find the Kafka Lead Broker");
@@ -135,7 +135,7 @@ public class KafkaClient {
 		try{
 			TopicAndPartition tp = new TopicAndPartition(this.topic, this.partition);
 			OffsetMetadataAndError offsetMetaAndErr = new OffsetMetadataAndError(offset, OffsetMetadataAndError.NoMetadata(), errorCode);
-			Map<TopicAndPartition, OffsetMetadataAndError> mapForCommitOffset = new HashMap<TopicAndPartition, OffsetMetadataAndError>();
+			Map<TopicAndPartition, OffsetMetadataAndError> mapForCommitOffset = new HashMap<>();
 			mapForCommitOffset.put(tp, offsetMetaAndErr);
 			kafka.javaapi.OffsetCommitRequest offsetCommitReq = new kafka.javaapi.OffsetCommitRequest(this.clientName, mapForCommitOffset, versionID, correlationId, this.clientName);
 			OffsetCommitResponse offsetCommitResp = this.simpleConsumer.commitOffsets(offsetCommitReq);
@@ -153,7 +153,7 @@ public class KafkaClient {
 		short versionID = 0;
 		int correlationId = 0;
 		try{
-			List<TopicAndPartition> tp = new ArrayList<TopicAndPartition>(); 
+			List<TopicAndPartition> tp = new ArrayList<>();
 			tp.add(new TopicAndPartition(this.topic, this.partition));	
 			OffsetFetchRequest offsetFetchReq = new OffsetFetchRequest(this.clientName,tp,versionID,correlationId,this.clientName);
 			OffsetFetchResponse response = this.simpleConsumer.fetchOffsets(offsetFetchReq);
@@ -172,8 +172,8 @@ public class KafkaClient {
 		SimpleConsumer leadFindConsumer = null;
 		try {
 			leadFindConsumer = new SimpleConsumer(this.incomingBrokerHost, this.incomingBrokerPort, FIND_KAFKA_LEADER_TIMEOUT,
-					this.consumerConfig.bulkSize, "leaderLookup");
-			List<String> topics = new ArrayList<String>();
+					this.consumerConfig.getBulkSize(), "leaderLookup");
+			List<String> topics = new ArrayList<>();
 			topics.add(this.topic);
 			TopicMetadataRequest req = new TopicMetadataRequest(topics);
 			kafka.javaapi.TopicMetadataResponse resp = leadFindConsumer.send(req);
@@ -284,7 +284,7 @@ public class KafkaClient {
 		try{
 			TopicAndPartition topicAndPartition = new TopicAndPartition(topic,
 					partition);
-			Map<TopicAndPartition, PartitionOffsetRequestInfo> requestInfo = new HashMap<TopicAndPartition, PartitionOffsetRequestInfo>();
+			Map<TopicAndPartition, PartitionOffsetRequestInfo> requestInfo = new HashMap<>();
 			requestInfo.put(topicAndPartition, new PartitionOffsetRequestInfo(
 					whichTime, 1));
 			kafka.javaapi.OffsetRequest request = new kafka.javaapi.OffsetRequest(

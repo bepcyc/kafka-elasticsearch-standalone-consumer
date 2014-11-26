@@ -19,10 +19,10 @@ public class AccessLogMessageHandler extends RawMessageStringHandler {
 	 */
 	
 	
-	private final String actualDateFormat = "dd/MMM/yyyy:hh:mm:ss";
-	private final String expectedDateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
-	private final String actualTimeZone = "Europe/London";
-	private final String expectedTimeZone = "Europe/London";
+	private final static String actualDateFormat = "dd/MMM/yyyy:hh:mm:ss";
+	private final static String expectedDateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+	private final static String actualTimeZone = "Europe/London";
+	private final static String expectedTimeZone = "Europe/London";
 	
 	
 	public AccessLogMessageHandler(){
@@ -61,32 +61,32 @@ public class AccessLogMessageHandler extends RawMessageStringHandler {
 	
 	private String convertToJson(String rawMsg, Long offset) throws Exception{
 		ObjectMapper mapper = new ObjectMapper();
-		String[] splittedMsg =  rawMsg.split(" ");
+		String[] splitMsg=  rawMsg.split(" ");
 
 		AccessLogMapper accessLogMsgObj = new AccessLogMapper();
 		accessLogMsgObj.setRawMessage(rawMsg);
 		accessLogMsgObj.getKafkaMetaData().setOffset(offset);
-		accessLogMsgObj.getKafkaMetaData().setTopic(this.getConfig().topic);
-		accessLogMsgObj.getKafkaMetaData().setConsumerGroupName(this.getConfig().consumerGroupName);
-		accessLogMsgObj.getKafkaMetaData().setPartition(this.getConfig().partition);
+		accessLogMsgObj.getKafkaMetaData().setTopic(this.getConfig().getTopic());
+		accessLogMsgObj.getKafkaMetaData().setConsumerGroupName(this.getConfig().getConsumerGroupName());
+		accessLogMsgObj.getKafkaMetaData().setPartition(this.getConfig().getPartition());
 		
-		accessLogMsgObj.setIp(splittedMsg[0].trim());
-		accessLogMsgObj.setProtocol(splittedMsg[1].trim());
+		accessLogMsgObj.setIp(splitMsg[0].trim());
+		accessLogMsgObj.setProtocol(splitMsg[1].trim());
 		
 		
-		if(splittedMsg[2].trim().toUpperCase().contains("GET")){
-			accessLogMsgObj.setMethod(splittedMsg[2].trim());
-			accessLogMsgObj.setPayLoad(splittedMsg[3].trim());
-			accessLogMsgObj.setResponseCode(Integer.parseInt(splittedMsg[7].trim()));
-			accessLogMsgObj.setSessionID(splittedMsg[8].trim());
-			String[] serverAndInstance = splittedMsg[8].trim().split("\\.")[1].split("-");
-			accessLogMsgObj.setServerAndInstance(splittedMsg[8].trim().split("\\.")[1]);
+		if(splitMsg[2].trim().toUpperCase().contains("GET")){
+			accessLogMsgObj.setMethod(splitMsg[2].trim());
+			accessLogMsgObj.setPayLoad(splitMsg[3].trim());
+			accessLogMsgObj.setResponseCode(Integer.parseInt(splitMsg[7].trim()));
+			accessLogMsgObj.setSessionID(splitMsg[8].trim());
+			String[] serverAndInstance = splitMsg[8].trim().split("\\.")[1].split("-");
+			accessLogMsgObj.setServerAndInstance(splitMsg[8].trim().split("\\.")[1]);
 
 			accessLogMsgObj.setServerName(serverAndInstance[0].trim());
 			accessLogMsgObj.setInstance(serverAndInstance[1].trim());
-			accessLogMsgObj.setHostName(splittedMsg[13].trim());
-			accessLogMsgObj.setResponseTime(Integer.parseInt(splittedMsg[14].trim()));
-			accessLogMsgObj.setUrl(splittedMsg[12].trim());
+			accessLogMsgObj.setHostName(splitMsg[13].trim());
+			accessLogMsgObj.setResponseTime(Integer.parseInt(splitMsg[14].trim()));
+			accessLogMsgObj.setUrl(splitMsg[12].trim());
 			
 			SimpleDateFormat actualFormat = new SimpleDateFormat(actualDateFormat);
 			actualFormat.setTimeZone(TimeZone.getTimeZone(actualTimeZone));
@@ -94,23 +94,23 @@ public class AccessLogMessageHandler extends RawMessageStringHandler {
 			SimpleDateFormat expectedFormat = new SimpleDateFormat(expectedDateFormat);
 			expectedFormat.setTimeZone(TimeZone.getTimeZone(expectedTimeZone));
 			
-			Date date = actualFormat.parse(splittedMsg[9].trim().replaceAll("\\[", ""));
+			Date date = actualFormat.parse(splitMsg[9].trim().replaceAll("\\[", ""));
 			accessLogMsgObj.setTimeStamp(expectedFormat.format(date));
 		}
 		
 		
-		if(splittedMsg[2].trim().toUpperCase().contains("POST")){
-			accessLogMsgObj.setMethod(splittedMsg[2].trim());
+		if(splitMsg[2].trim().toUpperCase().contains("POST")){
+			accessLogMsgObj.setMethod(splitMsg[2].trim());
 			accessLogMsgObj.setPayLoad(null);
-			accessLogMsgObj.setResponseCode(Integer.parseInt(splittedMsg[7].trim()));
-			accessLogMsgObj.setSessionID(splittedMsg[8].trim());
-			accessLogMsgObj.setServerAndInstance(splittedMsg[8].trim().split("\\.")[1]);
-			String[] serverAndInstance = splittedMsg[8].trim().split("\\.")[1].split("-");
+			accessLogMsgObj.setResponseCode(Integer.parseInt(splitMsg[7].trim()));
+			accessLogMsgObj.setSessionID(splitMsg[8].trim());
+			accessLogMsgObj.setServerAndInstance(splitMsg[8].trim().split("\\.")[1]);
+			String[] serverAndInstance = splitMsg[8].trim().split("\\.")[1].split("-");
 			accessLogMsgObj.setServerName(serverAndInstance[0].trim());
 			accessLogMsgObj.setInstance(serverAndInstance[1].trim());
-			accessLogMsgObj.setHostName(splittedMsg[13].trim());
-			accessLogMsgObj.setResponseTime(Integer.parseInt(splittedMsg[14].trim()));
-			accessLogMsgObj.setUrl(splittedMsg[12].trim());
+			accessLogMsgObj.setHostName(splitMsg[13].trim());
+			accessLogMsgObj.setResponseTime(Integer.parseInt(splitMsg[14].trim()));
+			accessLogMsgObj.setUrl(splitMsg[12].trim());
 			
 			SimpleDateFormat actualFormat = new SimpleDateFormat(actualDateFormat);
 			actualFormat.setTimeZone(TimeZone.getTimeZone(actualTimeZone));
@@ -118,7 +118,7 @@ public class AccessLogMessageHandler extends RawMessageStringHandler {
 			SimpleDateFormat expectedFormat = new SimpleDateFormat(expectedDateFormat);
 			expectedFormat.setTimeZone(TimeZone.getTimeZone(expectedTimeZone));
 			
-			Date date = actualFormat.parse(splittedMsg[9].trim().replaceAll("\\[", ""));
+			Date date = actualFormat.parse(splitMsg[9].trim().replaceAll("\\[", ""));
 			accessLogMsgObj.setTimeStamp(expectedFormat.format(date));		
 		}
 			

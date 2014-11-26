@@ -12,9 +12,9 @@ public class ConsumerLogger {
 	
 	public static void doInitLogger(ConsumerConfig config) throws IOException{
 		Properties logProp = new Properties();		
-		System.out.println("logPropertyFile::" + config.logPropertyFile);
-		System.out.println("logPropFileInStr::" + ConsumerLogger.class.getClassLoader().getResourceAsStream(config.logPropertyFile));
-		logProp.load(ConsumerLogger.class.getClassLoader().getResourceAsStream(config.logPropertyFile));
+		System.out.println("logPropertyFile::" + config.getLogPropertyFile());
+		System.out.println("logPropFileInStr::" + ConsumerLogger.class.getClassLoader().getResourceAsStream(config.getLogPropertyFile()));
+		logProp.load(ConsumerLogger.class.getClassLoader().getResourceAsStream(config.getLogPropertyFile()));
 		PropertyConfigurator.configure(logProp);
 		//PropertyConfigurator.configure(config.logPropertyFile);
 	}
@@ -22,9 +22,7 @@ public class ConsumerLogger {
 	public static Logger getLogger(Class<?> cls){		
 		return Logger.getLogger(cls);
 	}
-	
-	
-	
+
 	//public static Logger logger = Logger.getLogger(ConsumerLogger.class);
 	
 }

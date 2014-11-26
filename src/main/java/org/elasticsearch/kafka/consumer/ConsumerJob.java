@@ -108,7 +108,7 @@ public class ConsumerJob {
         }
         isStartingFirstTime = false;
         logger.info("computedOffset:=" + readOffset);
-        System.out.println("readOffset:=" + readOffset);
+        //System.out.println("readOffset:=" + readOffset);
         return readOffset;
     }
 

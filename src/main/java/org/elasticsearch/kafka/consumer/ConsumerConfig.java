@@ -1,5 +1,6 @@
 package org.elasticsearch.kafka.consumer;
 
+import org.apache.log4j.Logger;
 import org.elasticsearch.common.unit.TimeValue;
 
 import java.io.InputStream;
@@ -60,6 +61,8 @@ public class ConsumerConfig {
     //Log property file for the consumer instance
     private String logPropertyFile;
 
+    private final Logger logger = ConsumerLogger.getLogger(this.getClass());
+
     public ConsumerConfig(final Properties properties) throws Exception {
         init(properties);
     }
@@ -69,26 +72,26 @@ public class ConsumerConfig {
         try {
             //logger.info("configFile Passed::"+configFile);
             input = this.getClass().getClassLoader().getResourceAsStream(configFile);
-            //logger.info("configFile loaded Successfully");
-            System.out.println("configFile loaded Successfully");
+            logger.info("configFile loaded Successfully");
+            //System.out.println("configFile loaded Successfully");
         } catch (final Exception e) {
-            //logger.fatal("Error reading/loading ConfigFile. Throwing the error. Error Message::" + e.getMessage());
-            System.out.println("Error reading/loading ConfigFile. Throwing the error. Error Message::" + e.getMessage());
+            logger.fatal("Error reading/loading ConfigFile. Throwing the error. Error Message::" + e.getMessage());
+            //System.out.println("Error reading/loading ConfigFile. Throwing the error. Error Message::" + e.getMessage());
             e.printStackTrace();
             throw e;
         }
 
         Properties prop = null;
         if (input != null) {
-            System.out.println("configFile NOT loaded Successfully.Hence reading the default values for the properties");
+            //System.out.println("configFile NOT loaded Successfully.Hence reading the default values for the properties");
             // load the properties file
             prop = new Properties();
             prop.load(input);
             input.close();
         }
         init(prop);
-        System.out.println("Config reading complete !");
-        //logger.info("configFile loaded,read and closed Successfully");
+        //System.out.println("Config reading complete !");
+        logger.info("configFile loaded,read and closed Successfully");
     }
 
     private void init(final Properties prop) {

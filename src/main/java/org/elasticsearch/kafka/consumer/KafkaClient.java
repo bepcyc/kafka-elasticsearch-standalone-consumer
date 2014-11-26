@@ -180,7 +180,7 @@ public class KafkaClient {
             for (final TopicMetadata item : metaData) {
                 for (final PartitionMetadata part : item.partitionsMetadata()) {
                     if (part.partitionId() == partition) {
-                        System.out.println("ITS TRUE");
+                        //System.out.println("ITS TRUE");
                         returnMetaData = part;
                         break;
                     }

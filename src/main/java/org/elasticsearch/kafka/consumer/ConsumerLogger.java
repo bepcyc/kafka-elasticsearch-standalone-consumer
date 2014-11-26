@@ -12,8 +12,8 @@ public class ConsumerLogger {
 
     public static void doInitLogger(final ConsumerConfig config) throws IOException {
         final Properties logProp = new Properties();
-        System.out.println("logPropertyFile::" + config.getLogPropertyFile());
-        System.out.println("logPropFileInStr::" + ConsumerLogger.class.getClassLoader().getResourceAsStream(config.getLogPropertyFile()));
+        //System.out.println("logPropertyFile::" + config.getLogPropertyFile());
+        //System.out.println("logPropFileInStr::" + ConsumerLogger.class.getClassLoader().getResourceAsStream(config.getLogPropertyFile()));
         logProp.load(ConsumerLogger.class.getClassLoader().getResourceAsStream(config.getLogPropertyFile()));
         PropertyConfigurator.configure(logProp);
         //PropertyConfigurator.configure(config.logPropertyFile);

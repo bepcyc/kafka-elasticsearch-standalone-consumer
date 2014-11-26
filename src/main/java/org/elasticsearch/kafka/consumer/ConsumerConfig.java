@@ -64,14 +64,14 @@ public class ConsumerConfig {
         init(properties);
     }
 
-    public ConsumerConfig(String configFile) throws Exception {
+    public ConsumerConfig(final String configFile) throws Exception {
         InputStream input;
         try {
             //logger.info("configFile Passed::"+configFile);
             input = this.getClass().getClassLoader().getResourceAsStream(configFile);
             //logger.info("configFile loaded Successfully");
             System.out.println("configFile loaded Successfully");
-        } catch (Exception e) {
+        } catch (final Exception e) {
             //logger.fatal("Error reading/loading ConfigFile. Throwing the error. Error Message::" + e.getMessage());
             System.out.println("Error reading/loading ConfigFile. Throwing the error. Error Message::" + e.getMessage());
             e.printStackTrace();

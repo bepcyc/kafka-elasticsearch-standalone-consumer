@@ -16,12 +16,11 @@ public class TestConsumerJob extends TestCase {
 
     /**
      * TODO: make it work with embedded kafka. Now it's a local one.
-     *
      */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        String propString = "zookeeper=localhost\n" +
+        final String propString = "zookeeper=localhost\n" +
                 "brokerHost=localhost\n" +
                 "brokerPort=9092\n" +
                 "consumerGroupName=ESKafkaConsumerClient\n" +
@@ -42,9 +41,9 @@ public class TestConsumerJob extends TestCase {
     @Test
     public void testConsumerConfig() throws Exception {
         try {
-            final ConsumerConfig config = new ConsumerConfig(this.properties);
+            final ConsumerConfig config = new ConsumerConfig(properties);
             assertTrue("Config initialized", config != null);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             throw e;
         }
@@ -53,11 +52,11 @@ public class TestConsumerJob extends TestCase {
     @Test
     public void testConsumerJob() throws Exception {
         try {
-            final ConsumerConfig config = new ConsumerConfig(this.properties);
+            final ConsumerConfig config = new ConsumerConfig(properties);
             final ConsumerJob job = new ConsumerJob(config);
             final long computeOffset = job.computeOffset();
             assertTrue("computed offset is positive", computeOffset >= 0);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             throw e;
         }

@@ -2,140 +2,140 @@ package org.elasticsearch.kafka.consumer.mappers;
 
 public class AccessLogMapper {
 
-	private KafkaMetaDataMapper kafkaMetaData = new KafkaMetaDataMapper();
-	private String ip;
-	private String protocol;
-	private String method;
-	private String url;
-	private String payLoad;
-	private String sessionID;
-	private String timeStamp;
-	private Integer responseTime;
-	private Integer responseCode;
-	private String hostName;
-	private String serverAndInstance;
-	private String serverName;
-	private String instance;
-	private String rawMessage;
+    private KafkaMetaDataMapper kafkaMetaData = new KafkaMetaDataMapper();
+    private String ip;
+    private String protocol;
+    private String method;
+    private String url;
+    private String payLoad;
+    private String sessionID;
+    private String timeStamp;
+    private Integer responseTime;
+    private Integer responseCode;
+    private String hostName;
+    private String serverAndInstance;
+    private String serverName;
+    private String instance;
+    private String rawMessage;
 
-	public KafkaMetaDataMapper getKafkaMetaData() {
-		return kafkaMetaData;
-	}
+    public KafkaMetaDataMapper getKafkaMetaData() {
+        return kafkaMetaData;
+    }
 
-	public void setKafkaMetaData(KafkaMetaDataMapper kafkaMetaData) {
-		this.kafkaMetaData = kafkaMetaData;
-	}
+    public void setKafkaMetaData(final KafkaMetaDataMapper kafkaMetaData) {
+        this.kafkaMetaData = kafkaMetaData;
+    }
 
-	public String getIp() {
-		return ip;
-	}
+    public String getIp() {
+        return ip;
+    }
 
-	public void setIp(String ip) {
-		this.ip = ip;
-	}
+    public void setIp(final String ip) {
+        this.ip = ip;
+    }
 
-	public String getProtocol() {
-		return protocol;
-	}
+    public String getProtocol() {
+        return protocol;
+    }
 
-	public void setProtocol(String protocol) {
-		this.protocol = protocol;
-	}
+    public void setProtocol(final String protocol) {
+        this.protocol = protocol;
+    }
 
-	public String getMethod() {
-		return method;
-	}
+    public String getMethod() {
+        return method;
+    }
 
-	public void setMethod(String method) {
-		this.method = method;
-	}
+    public void setMethod(final String method) {
+        this.method = method;
+    }
 
-	public String getUrl() {
-		return url;
-	}
+    public String getUrl() {
+        return url;
+    }
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
+    public void setUrl(final String url) {
+        this.url = url;
+    }
 
-	public String getPayLoad() {
-		return payLoad;
-	}
+    public String getPayLoad() {
+        return payLoad;
+    }
 
-	public void setPayLoad(String payLoad) {
-		this.payLoad = payLoad;
-	}
+    public void setPayLoad(final String payLoad) {
+        this.payLoad = payLoad;
+    }
 
-	public String getSessionID() {
-		return sessionID;
-	}
+    public String getSessionID() {
+        return sessionID;
+    }
 
-	public void setSessionID(String sessionID) {
-		this.sessionID = sessionID;
-	}
+    public void setSessionID(final String sessionID) {
+        this.sessionID = sessionID;
+    }
 
-	public String getTimeStamp() {
-		return timeStamp;
-	}
+    public String getTimeStamp() {
+        return timeStamp;
+    }
 
-	public void setTimeStamp(String timeStamp) {
-		this.timeStamp = timeStamp;
-	}
+    public void setTimeStamp(final String timeStamp) {
+        this.timeStamp = timeStamp;
+    }
 
-	public Integer getResponseTime() {
-		return responseTime;
-	}
+    public Integer getResponseTime() {
+        return responseTime;
+    }
 
-	public void setResponseTime(Integer responseTime) {
-		this.responseTime = responseTime;
-	}
+    public void setResponseTime(final Integer responseTime) {
+        this.responseTime = responseTime;
+    }
 
-	public Integer getResponseCode() {
-		return responseCode;
-	}
+    public Integer getResponseCode() {
+        return responseCode;
+    }
 
-	public void setResponseCode(Integer responseCode) {
-		this.responseCode = responseCode;
-	}
+    public void setResponseCode(final Integer responseCode) {
+        this.responseCode = responseCode;
+    }
 
-	public String getHostName() {
-		return hostName;
-	}
+    public String getHostName() {
+        return hostName;
+    }
 
-	public void setHostName(String hostName) {
-		this.hostName = hostName;
-	}
+    public void setHostName(final String hostName) {
+        this.hostName = hostName;
+    }
 
-	public String getServerName() {
-		return serverName;
-	}
+    public String getServerName() {
+        return serverName;
+    }
 
-	public void setServerName(String serverName) {
-		this.serverName = serverName;
-	}
+    public void setServerName(final String serverName) {
+        this.serverName = serverName;
+    }
 
-	public String getInstance() {
-		return instance;
-	}
+    public String getInstance() {
+        return instance;
+    }
 
-	public void setInstance(String instance) {
-		this.instance = instance;
-	}
+    public void setInstance(final String instance) {
+        this.instance = instance;
+    }
 
-	public String getServerAndInstance() {
-		return serverAndInstance;
-	}
+    public String getServerAndInstance() {
+        return serverAndInstance;
+    }
 
-	public void setServerAndInstance(String serverAndInstance) {
-		this.serverAndInstance = serverAndInstance;
-	}
+    public void setServerAndInstance(final String serverAndInstance) {
+        this.serverAndInstance = serverAndInstance;
+    }
 
-	public String getRawMessage() {
-		return rawMessage;
-	}
+    public String getRawMessage() {
+        return rawMessage;
+    }
 
-	public void setRawMessage(String rawMessage) {
-		this.rawMessage = rawMessage;
-	}
+    public void setRawMessage(final String rawMessage) {
+        this.rawMessage = rawMessage;
+    }
 
 }

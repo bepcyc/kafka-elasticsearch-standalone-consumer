@@ -100,7 +100,7 @@ public class ConsumerConfig {
             topic = prop.getProperty("topic", "");
             partition = Short.parseShort(prop.getProperty("partition", "0"));
             startOffsetFrom = prop.getProperty("startOffsetFrom", "");
-            startOffset = Integer.parseInt(prop.getProperty("startOffset", ""));
+            startOffset = Integer.parseInt(prop.getProperty("startOffset", "0"));
             consumerGroupName = prop.getProperty("consumerGroupName", "ESKafkaConsumerClient");
             statsdPrefix = prop.getProperty("statsdPrefix", "");
             statsdHost = prop.getProperty("statsdHost", "");

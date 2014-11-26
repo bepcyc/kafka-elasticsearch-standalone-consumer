@@ -11,26 +11,30 @@ import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 /**
- * Created by bepcyc on 11/25/14.
+ * Created by Viacheslav Rodionov (viacheslav.rodionov@gmail.com) on 11/25/14.
  */
 public class TestConsumerJob extends TestCase {
     final Properties properties = new Properties();
 
+    /**
+     * TODO: make it work with embedded kafka. Now it's a local one.
+     *
+     */
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        String propString = "zookeeper=10.121.16.21\n" +
-                "brokerHost=10.121.16.21\n" +
+        String propString = "zookeeper=localhost\n" +
+                "brokerHost=localhost\n" +
                 "brokerPort=9092\n" +
                 "consumerGroupName=ESKafkaConsumerClient\n" +
                 "topic=es_kafka\n" +
                 "partition=0\n" +
-                "startOffsetFrom=CUSTOM\n" +
-                "startOffset=0\n" +
+                "startOffsetFrom=OLDEST\n" +
+                //"startOffset=0\n" +
                 "messageHandlerClass=org.elasticsearch.kafka.consumer.messageHandlers.RawMessageStringHandler\n" +
-                "esHost=10.121.16.21\n" +
+                "esHost=localhost\n" +
                 "esPort=9200\n" +
-                "esIndex=kafka_shit\n" +
+                "esIndex=kafka_idx\n" +
                 "esIndexType=my_type\n" +
                 "esMsgFailureTolerancePercent=5";
         final InputStream inputStream = new ByteArrayInputStream(propString.getBytes(StandardCharsets.UTF_8));
@@ -38,17 +42,18 @@ public class TestConsumerJob extends TestCase {
     }
 
     @Test
-    public void testConsumerConfig() {
+    public void testConsumerConfig() throws Exception {
         try {
             final ConsumerConfig config = new ConsumerConfig(this.properties);
             assertTrue("Config initialized", config != null);
         } catch (Exception e) {
             e.printStackTrace();
+            throw e;
         }
     }
 
     @Test
-    public void testConsumerJob() {
+    public void testConsumerJob() throws Exception {
         try {
             final ConsumerConfig config = new ConsumerConfig(this.properties);
             final ConsumerJob job = new ConsumerJob(config);
@@ -56,6 +61,7 @@ public class TestConsumerJob extends TestCase {
             assertTrue("computed offset is positive", computeOffset >= 0);
         } catch (Exception e) {
             e.printStackTrace();
+            throw e;
         }
     }
 }
